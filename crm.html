@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fbfaf7"><title>Espace conseiller — Assurances 974</title>
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <header class="navbar"><div class="wrap nav-inner">
+    <a href="index.html" class="brand"><span class="brand-mark"><img src="assets/logo-assurances974.png" alt="Logo Assurances 974"></span><span class="brand-name">assurances 974<small>Espace conseiller</small></span></a>
+    <nav class="navlinks" id="navlinks" aria-label="Navigation principale"><a href="index.html">Site public</a><a href="agences.html">Agences</a><a href="contact.html">Contact</a></nav>
+    <div class="nav-actions"><span class="crm-demo-pill">CRM de démonstration</span></div>
+  </div></header>
+  <main class="crm-page">
+    <section class="crm-top"><div class="wrap"><div class="eyebrow">Espace conseiller · La Réunion</div><h1>Bonjour, votre portefeuille est prêt.</h1><p>Suivez les prochaines échéances et préparez vos relances depuis un seul endroit.</p></div></section>
+    <section class="wrap crm-content">
+      <div class="crm-stats"><article><span>Échéances à venir</span><strong id="dueCount">5</strong><small>Dans les 30 prochains jours</small></article><article><span>Relances envoyées</span><strong id="sentCount">0</strong><small>Cette session</small></article><article><span>À traiter aujourd’hui</span><strong id="todayCount">3</strong><small>Clients à recontacter</small></article></div>
+      <div class="crm-toolbar"><div><div class="eyebrow">Renouvellements</div><h2>Contrats bientôt à terme</h2><p>Les dates et identités ci-dessous sont fictives.</p></div><button class="btn btn-outline" id="crmAssistantButton">✳ Demander à l’assistant</button></div>
+      <div class="crm-layout">
+        <section class="crm-list" id="clientList" aria-label="Clients avec échéance prochaine"></section>
+        <aside class="crm-assistant-card"><div class="crm-assistant-icon">✳</div><div class="eyebrow">Assistant de relance</div><h2>Un bon suivi, au bon moment.</h2><p id="assistantInsight">5 contrats arrivent à échéance dans les 30 prochains jours. Commencez par les 3 échéances les plus proches et proposez un échange pour faire le point sur les besoins actuels.</p><div class="crm-ai-actions"><button class="btn btn-primary" id="draftAllButton">Préparer les 5 relances <span>→</span></button><button class="btn btn-outline" id="explainButton">Pourquoi relancer ?</button></div><small>L’assistant prépare les textes. L’envoi est simulé et aucun client réel n’est contacté.</small></aside>
+      </div>
+    </section>
+  </main>
+  <div class="crm-notification" id="crmNotification" role="status" aria-live="polite"><span class="crm-notification-icon">↻</span><span><b>5 contrats arrivent bientôt à échéance</b><small>L’assistant a préparé une liste de suivi.</small></span><button id="dismissNotification" aria-label="Fermer la notification">×</button></div>
+  <div class="crm-modal-backdrop" id="crmModalBackdrop" hidden><section class="crm-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="crm-modal-close" id="closeModal" aria-label="Fermer">×</button><div class="eyebrow" id="modalKicker">Relance préparée</div><h2 id="modalTitle">Message de suivi</h2><p id="modalIntro"></p><textarea id="draftMessage" rows="7" aria-label="Message de relance"></textarea><div class="crm-modal-actions"><button class="btn btn-outline" id="cancelDraft">Annuler</button><button class="btn btn-primary" id="sendDraft">Envoyer la relance <span>→</span></button></div><small class="crm-modal-note">Mode fictif : aucun SMS ou courriel n’est réellement envoyé.</small></section></div>
+  <script src="crm.js"></script>
+</body>
+</html>

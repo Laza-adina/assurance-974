@@ -1,4 +1,11 @@
 (() => {
+  const welcomeLoader = document.getElementById('welcomeLoader');
+  if (welcomeLoader) {
+    const hideWelcome = () => { welcomeLoader.classList.add('is-leaving'); setTimeout(() => welcomeLoader.remove(), 520); };
+    if (document.readyState === 'complete') setTimeout(hideWelcome, 450);
+    else window.addEventListener('load', () => setTimeout(hideWelcome, 450), { once:true });
+    setTimeout(hideWelcome, 3500);
+  }
   const iconPaths = {
     car:'<path d="M5 17h14l1.2-5.6a2 2 0 0 0-2-2.4H5.8a2 2 0 0 0-2 2.4L5 17Z"/><path d="M7 9l1.3-3h7.4L17 9M5 17v2m14-2v2M6 13h.01M18 13h.01M7 17v1m10-1v1"/>',
     health:'<path d="M12 21s-8-4.4-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6.6-8 11-8 11Z"/><path d="M9 12h6m-3-3v6"/>',
@@ -105,10 +112,10 @@
     choices([{label:'Préparer une demande de rappel',action:'lead'},{label:'Trouver cette assurance',action:'find'},{label:'Comparer un autre besoin',action:'compare'}]);
   }
   function startLead() {
-    flow=null; message('Préparons une demande de rappel de démonstration. Le formulaire reste dans votre navigateur et aucun message ne sera envoyé. Pour joindre réellement l’équipe, appelez le 06 92 94 16 17.');
+    flow=null; message('Je peux préparer votre demande pour l’équipe Assurances 974. Choisissez si vous souhaitez un rappel ou un rendez-vous, puis indiquez vos coordonnées. Votre application de messagerie vous laissera vérifier et envoyer la demande.');
     const box=document.createElement('div'); box.className='msg bot'; box.style.width='100%';
-    box.innerHTML='<form class="lead-form"><label style="font-size:10px">Prénom ou initiale<input name="name" required maxlength="24" placeholder="Ex. Camille" autocomplete="given-name"></label><label style="font-size:10px">Sujet<select name="topic"><option>Être orienté(e)</option><option>Auto & moto</option><option>Santé</option><option>Habitation</option><option>Obsèques & prévoyance</option><option>Assurance professionnelle</option><option>Autre</option></select></label><button>Tester le parcours</button><small style="color:#64767a;font-size:9px">Aucune transmission ni conservation en démo.</small></form>';
-    body.appendChild(box); box.querySelector('form').addEventListener('submit',e=>{e.preventDefault();const data=new FormData(e.currentTarget);const name=String(data.get('name')).trim();if(!name)return;box.remove();message(`Parcours testé : rappel demandé par « ${name} » pour « ${data.get('topic')} ». Aucune information n’a quitté cette page. Pour joindre l’équipe, appelez le 06 92 94 16 17.`);choices([{label:'Appeler le conseiller',action:'call'},{label:'Recommencer',action:'lead'}]);}); body.scrollTop=body.scrollHeight;
+    box.innerHTML='<form class="lead-form"><label>Votre demande<select name="request"><option>Demande de rappel</option><option>Rendez-vous en agence</option><option>Rendez-vous par téléphone</option></select></label><label>Prénom et nom<input name="name" required maxlength="80" placeholder="Ex. Camille Hoarau" autocomplete="name"></label><label>Numéro de téléphone<input name="phone" type="tel" required maxlength="24" placeholder="06 92 …" autocomplete="tel"></label><label>Votre besoin<select name="topic"><option>Être orienté(e)</option><option>Auto & moto</option><option>Santé</option><option>Habitation</option><option>Obsèques & prévoyance</option><option>Assurance professionnelle</option><option>Autre</option></select></label><label>Agence souhaitée<select name="agency"><option>Indifférent</option><option>Saint-Leu</option><option>Saint-Denis</option><option>Saint-Pierre</option><option>Saint-André</option></select></label><label>Moment préféré<input name="time" type="datetime-local"></label><button>Continuer vers l’envoi</button><small>Vous pourrez vérifier votre demande avant de l’envoyer.</small></form>';
+    body.appendChild(box); box.querySelector('form').addEventListener('submit',e=>{e.preventDefault();const data=new FormData(e.currentTarget);const name=String(data.get('name')).trim(),phone=String(data.get('phone')).trim();if(!name||!phone)return;const requested=String(data.get('request')),topic=String(data.get('topic')),agency=String(data.get('agency')),when=String(data.get('time')||'À convenir');const subject=`Assurances 974 — ${requested}`;const bodyText=`Bonjour,\n\nJe souhaite organiser la suite de ma demande.\n\nNom : ${name}\nTéléphone : ${phone}\nDemande : ${requested}\nBesoin : ${topic}\nAgence : ${agency}\nMoment préféré : ${when}\n\nMerci de me recontacter pour confirmer.`;box.remove();message('Votre demande est prête. Vérifiez les informations dans votre messagerie, puis envoyez-la à l’équipe. Le rendez-vous ou le rappel sera confirmé par un conseiller.');const a=document.createElement('a');a.href=`mailto:ssp-contact@assurances974.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;a.className='btn btn-primary';a.style.cssText='font-size:11px;margin:0 0 8px';a.textContent='Ouvrir ma messagerie';body.appendChild(a);choices([{label:'Appeler directement',action:'call'},{label:'Nouvelle demande',action:'lead'}]);body.scrollTop=body.scrollHeight;}); body.scrollTop=body.scrollHeight;
   }
   function runAction(action,value) {
     if(action==='find') return startFind(); if(action==='compare') return startCompare(); if(action==='lead') return startLead();
@@ -120,11 +127,18 @@
     if(action==='call') {window.location.href='tel:+262692941617';return;}
   }
   function textQuestion(text) {
+    if(window.AssurancesChatbot?.ask) { askGroq(text); return; }
     const q=text.toLowerCase(); let key='assurance';
     if(/résili|resili/.test(q))key='resiliation'; else if(/sinistre|accident|dégât|degat/.test(q))key='sinistre'; else if(/agence|adresse|où|ou vous|saint/.test(q))key='agence'; else if(/téléphone|telephone|appeler|contact|mail|rappel/.test(q))key='contact'; else if(/compar|devis|prix|tarif/.test(q))key='compare';
     message(directory[key]);
     if(key==='agence')linkCard('Voir les agences et les itinéraires','agences.html');
     choices([{label:'Trouver une solution',action:'find'},{label:'Comparer des critères',action:'compare'},{label:'Demander un rappel',action:'lead'}]);
+  }
+  const aiHistory=[];
+  async function askGroq(text) {
+    const pending=message('Je regarde cela…');pending.classList.add('typing');
+    try { const answer=await window.AssurancesChatbot.ask(text,aiHistory);pending.remove();message(answer);aiHistory.push({role:'user',content:text},{role:'assistant',content:answer});if(aiHistory.length>12)aiHistory.splice(0,aiHistory.length-12);choices([{label:'Trouver une solution',action:'find'},{label:'Comparer des critères',action:'compare'},{label:'Demander un rappel',action:'lead'}]); }
+    catch { pending.remove();message('Je n’ai pas pu traiter votre question cette fois-ci. Vous pouvez appeler le 06 92 94 16 17 ou écrire à ssp-contact@assurances974.com.');choices([{label:'Demander un rappel',action:'lead'},{label:'Réessayer',action:'question'}]); }
   }
 
   launch?.addEventListener('click',()=>open()); close?.addEventListener('click',shut);
@@ -144,4 +158,5 @@
   menu?.addEventListener('click',()=>{const state=nav.classList.toggle('open');menu.setAttribute('aria-expanded',state?'true':'false');});
   nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu?.setAttribute('aria-expanded','false');}));
   document.getElementById('year')?.replaceChildren(String(new Date().getFullYear()));
+  if('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}}),{threshold:.08});document.querySelectorAll('main section, .quick-item, .product, .detail-card, .agency-card, .step, .contact-card').forEach((el,i)=>{el.classList.add('reveal');el.style.transitionDelay=`${Math.min(i%4,3)*55}ms`;observer.observe(el)})}
 })();
