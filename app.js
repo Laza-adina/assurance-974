@@ -131,6 +131,14 @@
   document.querySelectorAll('[data-open-chat]').forEach(el=>el.addEventListener('click',()=>open(el.dataset.chatAction||null)));
   document.querySelectorAll('[data-open-compare]').forEach(el=>el.addEventListener('click',()=>open('compare')));
   document.querySelectorAll('[data-open-find]').forEach(el=>el.addEventListener('click',()=>open('find')));
+  const contactForm=document.getElementById('contactForm');
+  contactForm?.addEventListener('submit',e=>{
+    e.preventDefault();
+    const data=new FormData(contactForm);
+    const subject=`Assurances 974 — ${String(data.get('subject')||'Demande de contact')}`;
+    const bodyText=`Bonjour,\n\n${String(data.get('message')||'')}\n\nNom : ${String(data.get('name')||'')}\nE-mail : ${String(data.get('email')||'')}`;
+    window.location.href=`mailto:ssp-contact@assurances974.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
+  });
   body?.addEventListener('click',e=>{const button=e.target.closest('button[data-action]');if(button)runAction(button.dataset.action,button.dataset.value);});
   form?.addEventListener('submit',e=>{e.preventDefault();const value=input.value.trim();input.value='';if(value)textQuestion(value);});
   menu?.addEventListener('click',()=>{const state=nav.classList.toggle('open');menu.setAttribute('aria-expanded',state?'true':'false');});
