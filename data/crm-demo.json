@@ -226,5 +226,280 @@
       "createdAt": "2026-10-08T05:10:52.926Z"
     }
   ],
-  "consents": []
+  "consents": [],
+  "modules": {
+    "appointments": [
+      {
+        "id": "RDV-01",
+        "date": "2026-10-08",
+        "time": "10:30",
+        "client": "Nadia Dijoux",
+        "phone": "06 92 00 05 05",
+        "type": "Téléphone",
+        "topic": "Assurance professionnelle",
+        "status": "Confirmé",
+        "owner": "Conseiller",
+        "note": "Découverte du besoin"
+      },
+      {
+        "id": "RDV-02",
+        "date": "2026-10-09",
+        "time": "14:00",
+        "client": "Élodie Payet",
+        "phone": "06 92 00 14 28",
+        "type": "Agence Saint-Leu",
+        "topic": "Renouvellement auto",
+        "status": "À confirmer",
+        "owner": "Conseiller",
+        "note": "Préparer le point échéance"
+      },
+      {
+        "id": "RDV-03",
+        "date": "2026-10-11",
+        "time": "09:00",
+        "client": "Mathieu Hoarau",
+        "phone": "06 92 00 28 53",
+        "type": "Visioconférence",
+        "topic": "Habitation",
+        "status": "Confirmé",
+        "owner": "Conseiller",
+        "note": ""
+      }
+    ],
+    "quotes": [
+      {
+        "id": "DEV-001",
+        "client": "Bourbon Mobilité",
+        "contact": "Sarah Payet",
+        "product": "Flotte automobile",
+        "date": "2026-10-06",
+        "validUntil": "2026-11-05",
+        "premium": 1280,
+        "payment": "Annuel",
+        "status": "Envoyé",
+        "note": "Simulation indicative à confirmer avec le partenaire."
+      },
+      {
+        "id": "DEV-002",
+        "client": "Cabinet des Hauts",
+        "contact": "Nadia Dijoux",
+        "product": "Multirisque professionnelle",
+        "date": "2026-10-08",
+        "validUntil": "2026-11-07",
+        "premium": 890,
+        "payment": "Annuel",
+        "status": "Brouillon",
+        "note": "Données de démonstration."
+      }
+    ],
+    "invoices": [
+      {
+        "id": "FAC-001",
+        "client": "Élodie Payet",
+        "contract": "AUTO-974-1048",
+        "date": "2026-10-04",
+        "dueDate": "2026-10-18",
+        "amount": 684,
+        "paid": 0,
+        "status": "À régler",
+        "note": "Cotisation annuelle fictive"
+      },
+      {
+        "id": "FAC-002",
+        "client": "Mathieu Hoarau",
+        "contract": "HAB-974-2086",
+        "date": "2026-09-13",
+        "dueDate": "2026-10-03",
+        "amount": 392,
+        "paid": 120,
+        "status": "En retard",
+        "note": "Échéance de démonstration"
+      }
+    ],
+    "subscriptions": [
+      {
+        "id": "ECH-001",
+        "client": "Nadia Fontaine",
+        "contract": "SANT-974-3182",
+        "product": "Complémentaire santé",
+        "amount": 126,
+        "frequency": "Mensuel",
+        "nextDate": "2026-10-16",
+        "status": "Actif",
+        "note": "Échéance simulée · aucun paiement réel"
+      },
+      {
+        "id": "ECH-002",
+        "client": "Anaïs Dijoux",
+        "contract": "EMP-974-5390",
+        "product": "Assurance emprunteur",
+        "amount": 54,
+        "frequency": "Mensuel",
+        "nextDate": "2026-10-21",
+        "status": "Actif",
+        "note": "Suivi fictif"
+      }
+    ],
+    "products": [
+      {
+        "id": "OFF-01",
+        "name": "Assurance auto",
+        "type": "Auto",
+        "description": "Responsabilité civile et options à étudier avec un conseiller",
+        "active": "Oui"
+      },
+      {
+        "id": "OFF-02",
+        "name": "Multirisque habitation",
+        "type": "Habitation",
+        "description": "Protection du logement selon garanties souscrites",
+        "active": "Oui"
+      },
+      {
+        "id": "OFF-03",
+        "name": "Complémentaire santé",
+        "type": "Santé",
+        "description": "Niveau de couverture à préciser selon la situation",
+        "active": "Oui"
+      },
+      {
+        "id": "OFF-04",
+        "name": "Responsabilité civile professionnelle",
+        "type": "Professionnel",
+        "description": "Étude des responsabilités propres à l’activité",
+        "active": "Oui"
+      },
+      {
+        "id": "OFF-05",
+        "name": "Prévoyance",
+        "type": "Prévoyance",
+        "description": "Solutions à examiner avec un conseiller",
+        "active": "Oui"
+      },
+      {
+        "id": "OFF-06",
+        "name": "Protection juridique",
+        "type": "Protection juridique",
+        "description": "Conditions à vérifier selon le contrat partenaire",
+        "active": "Oui"
+      }
+    ],
+    "contracts": [
+      {
+        "id": "AUTO-974-1048",
+        "client": "Élodie Payet",
+        "product": "Assurance auto",
+        "startDate": "2025-10-12",
+        "renewalDate": "2026-10-12",
+        "premium": 684,
+        "frequency": "Annuel",
+        "status": "À renouveler",
+        "owner": "Conseiller",
+        "note": "Faire le point sur les besoins avant reconduction."
+      },
+      {
+        "id": "HAB-974-2086",
+        "client": "Mathieu Hoarau",
+        "product": "Multirisque habitation",
+        "startDate": "2025-10-16",
+        "renewalDate": "2026-10-16",
+        "premium": 392,
+        "frequency": "Annuel",
+        "status": "À renouveler",
+        "owner": "Conseiller",
+        "note": "Réviser les informations du logement."
+      },
+      {
+        "id": "SANT-974-3182",
+        "client": "Nadia Fontaine",
+        "product": "Complémentaire santé",
+        "startDate": "2025-10-21",
+        "renewalDate": "2026-10-21",
+        "premium": 126,
+        "frequency": "Mensuel",
+        "status": "Actif",
+        "owner": "Conseiller",
+        "note": "Échange de suivi à proposer."
+      },
+      {
+        "id": "PRO-974-4271",
+        "client": "Lucas Rivière",
+        "product": "Assurance professionnelle",
+        "startDate": "2025-10-29",
+        "renewalDate": "2026-10-29",
+        "premium": 918,
+        "frequency": "Annuel",
+        "status": "Actif",
+        "owner": "Conseiller",
+        "note": "Confirmer l’évolution de l’activité."
+      }
+    ],
+    "reviews": [
+      {
+        "id": "AV-001",
+        "client": "Élodie Payet",
+        "date": "2026-10-06",
+        "rating": 5,
+        "text": "Équipe disponible et à l’écoute pendant mon rendez-vous.",
+        "status": "À valider",
+        "source": "Invitation client"
+      },
+      {
+        "id": "AV-002",
+        "client": "Mathieu Hoarau",
+        "date": "2026-09-26",
+        "rating": 4,
+        "text": "Les explications étaient claires et le suivi rapide.",
+        "status": "Publié",
+        "source": "Invitation client"
+      }
+    ],
+    "notifications": [
+      {
+        "id": "NT-001",
+        "date": "2026-10-08",
+        "client": "Élodie Payet",
+        "type": "Renouvellement",
+        "text": "Contrat AUTO-974-1048 à échéance dans 4 jours : proposer un échange.",
+        "status": "À traiter"
+      },
+      {
+        "id": "NT-002",
+        "date": "2026-10-08",
+        "client": "Mathieu Hoarau",
+        "type": "Cotisation",
+        "text": "Échéance FAC-002 en retard dans la simulation : vérifier le suivi.",
+        "status": "À traiter"
+      },
+      {
+        "id": "NT-003",
+        "date": "2026-10-08",
+        "client": "Bourbon Mobilité",
+        "type": "Devis",
+        "text": "Reprendre contact pour expliquer la proposition envoyée.",
+        "status": "À traiter"
+      }
+    ],
+    "settings": [
+      {
+        "id": "main",
+        "name": "Assurances 974",
+        "email": "ssp-contact@assurances974.com",
+        "phone": "06 92 94 16 17",
+        "address": "La Réunion",
+        "currency": "EUR",
+        "reminderDays": 30,
+        "signature": "Assurances 974 · Courtier à La Réunion"
+      }
+    ],
+    "team": [
+      {
+        "id": "user1",
+        "name": "Conseiller",
+        "email": "conseiller@assurances974.test",
+        "role": "Administrateur",
+        "status": "Actif"
+      }
+    ]
+  }
 }

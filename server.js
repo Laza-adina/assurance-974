@@ -33,17 +33,32 @@ function readCrm() {
 
 async function crmApi(req, res, url) {
   if (req.method === 'GET' && url.pathname === '/api/crm') return json(res, 200, readCrm());
+  if (req.method === 'GET' && url.pathname === '/api/crm/modules') return json(res, 200, readCrm().modules || {});
   if (req.method !== 'POST') return json(res, 405, { error:'Méthode non autorisée.' });
   let raw = '';
   for await (const chunk of req) { raw += chunk; if (raw.length > 50000) return json(res, 413, { error:'Requête trop volumineuse.' }); }
   let payload;
   try { payload = JSON.parse(raw); } catch { return json(res, 400, { error:'Requête invalide.' }); }
   const data = readCrm();
+  if (url.pathname === '/api/crm/modules') {
+    if (req.method === 'GET') return json(res, 200, data.modules || {});
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return json(res, 400, { error:'Données de modules invalides.' });
+    const allowed = ['appointments','quotes','invoices','subscriptions','products','contracts','reviews','notifications','settings','team'];
+    const next = { ...(data.modules || {}) };
+    for (const key of allowed) if (Array.isArray(payload[key]) || (key === 'settings' && payload[key] && typeof payload[key] === 'object' && !Array.isArray(payload[key]))) next[key] = payload[key];
+    data.modules = next;
+    fs.mkdirSync(path.dirname(CRM_DATA), { recursive:true }); fs.writeFileSync(CRM_DATA, JSON.stringify(data, null, 2));
+    return json(res, 200, { ok:true, modules:next });
+  }
   if (url.pathname === '/api/crm/prospects') {
     if (!payload.consent || !payload.prospect?.company || !payload.prospect?.contact) return json(res, 400, { error:'Validation et consentement requis.' });
     const prospect = { ...payload.prospect, id:`p${Date.now()}`, status:'À appeler', priority:'B', source:'Assistant virtuel', owner:'Conseiller', createdAt:new Date().toISOString() };
     data.prospects.unshift(prospect);
     data.consents.push({ id:`consent-${Date.now()}`, prospectId:prospect.id, accepted:true, purpose:'Enregistrement de la demande et rappel par un conseiller', acceptedAt:new Date().toISOString(), channel:'Assistant virtuel' });
+    data.modules = data.modules || {};
+    data.modules.notifications = Array.isArray(data.modules.notifications) ? data.modules.notifications : [];
+    const isCallback = /rappel/i.test(prospect.nextAction || '');
+    data.modules.notifications.unshift({ id:`NT-LEAD-${prospect.id}`, prospectId:prospect.id, date:new Date().toISOString().slice(0,10), client:prospect.contact, type:isCallback?'Rappel':'Rendez-vous', text:`Nouvelle demande de ${isCallback?'rappel':'rendez-vous'} via l’assistant. Besoin : ${prospect.need || 'à préciser'}. Ville ou agence : ${prospect.city || 'à préciser'}. À prendre en charge par un conseiller.`, status:'À traiter', source:'Assistant virtuel' });
     fs.mkdirSync(path.dirname(CRM_DATA), { recursive:true }); fs.writeFileSync(CRM_DATA, JSON.stringify(data, null, 2));
     return json(res, 201, { data, prospect });
   }
@@ -53,7 +68,7 @@ async function crmApi(req, res, url) {
     return json(res, 200, { ok:true });
   }
   if (url.pathname === '/api/crm/analyze') {
-    const snapshot = JSON.stringify({ prospects:data.prospects, clients:data.clients, reminders:data.reminders, calls:data.calls.slice(-10) }).slice(0,18000);
+    const snapshot = JSON.stringify({ prospects:data.prospects, clients:data.clients, calls:data.calls.slice(-10), modules:data.modules || {} }).slice(0,18000);
     const fallback = localInsuranceAnalysis(data);
     if (!process.env.GROQ_API_KEY) return json(res, 200, { analysis:fallback, source:'local' });
     try {
@@ -67,12 +82,19 @@ async function crmApi(req, res, url) {
 
 function localInsuranceAnalysis(data) {
   const now = new Date(); const due = data.clients.map(c => ({...c, daysLeft:Math.ceil((new Date(`${c.dateIso}T12:00:00`) - now) / 86400000)})).filter(c => c.daysLeft >= 0 && c.daysLeft <= 30).sort((a,b)=>a.daysLeft-b.daysLeft);
+  const modules = data.modules || {}; const contracts = (modules.contracts || []).filter(c => c.renewalDate && c.renewalDate <= new Date(Date.now()+30*86400000).toISOString().slice(0,10) && !['Résilié','Clos'].includes(c.status));
+  const overdue = (modules.invoices || []).filter(i => i.status === 'En retard'); const rdvs = (modules.appointments || []).filter(a => a.date >= now.toISOString().slice(0,10) && a.status !== 'Annulé');
+  const pendingQuotes = (modules.quotes || []).filter(q => q.status === 'Envoyé');
   const callbacks = data.prospects.filter(p => ['Rappeler','Pas de réponse'].includes(p.status)).slice(0,4);
   const quotes = data.prospects.filter(p => p.status === 'Devis envoyé' || p.status === 'Intéressé').slice(0,3);
   const lines = [`Synthèse de suivi assurance — ${due.length} échéance(s) à préparer dans les 30 jours.`];
   due.forEach(c => lines.push(`${c.name} : ${c.product}, échéance dans ${c.daysLeft} jour(s). Vérifier les besoins et proposer un échange avant renouvellement.`));
   callbacks.forEach(p => lines.push(`${p.contact} (${p.company}) : rappel à planifier. Dernière note : ${p.note || 'aucune note'}`));
   quotes.forEach(p => lines.push(`${p.contact} (${p.company}) : reprendre contact pour expliquer le devis ${p.need}.`));
+  contracts.forEach(c => lines.push(`${c.client} : renouvellement du contrat ${c.id} prévu le ${new Intl.DateTimeFormat('fr-FR').format(new Date(`${c.renewalDate}T12:00:00`))}. Préparer une prise de contact.`));
+  overdue.forEach(i => lines.push(`${i.client} : l’échéance simulée ${i.id} est signalée en retard. Vérifier la situation avec le conseiller.`));
+  pendingQuotes.forEach(q => lines.push(`${q.client} : devis ${q.id} envoyé, réponse à suivre.`));
+  if (rdvs.length) lines.push(`${rdvs.length} rendez-vous à venir dans l’agenda : vérifier les confirmations et préparer les dossiers.`);
   if (!due.length && !callbacks.length && !quotes.length) lines.push('Aucune relance prioritaire détectée. Vérifier les prochains rendez-vous et tenir les dossiers à jour.');
   lines.push('Conseil : consigner chaque échange et laisser un conseiller confirmer les garanties et conditions du contrat.');
   return lines.join('\n');

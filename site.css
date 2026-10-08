@@ -96,3 +96,20 @@
     .why-list .check{display:grid;place-items:center;color:var(--teal);font-size:16px;line-height:1}
     @media(max-width:700px){.hero-video-shade{background:linear-gradient(180deg,rgba(251,250,247,.88) 0%,rgba(251,250,247,.76) 57%,rgba(251,250,247,.45) 100%)}}
     @media(prefers-reduced-motion:reduce){.hero-video-player{display:none}}
+
+/* CRM modules: additional assurance workflows */
+.desk-nav{overflow-y:auto;max-height:calc(100vh - 292px);scrollbar-width:thin;scrollbar-color:#40516b transparent}
+.desk-nav button{flex-shrink:0}
+.module-tools{align-items:center}
+.module-tools .desk-count-chip{white-space:nowrap;color:#64728a;font-size:13px}
+.module-row-actions{display:flex;align-items:center;gap:5px;min-width:125px}
+.module-action{border:1px solid #e2e9ef;border-radius:5px;background:#fff;color:#28756f;padding:5px 7px;font:600 12px 'DM Sans',Arial,sans-serif;cursor:pointer;white-space:nowrap}
+.module-action:hover{border-color:#9bc9be;background:#f1f8f5}
+.module-modal{max-width:760px}
+.desk-module-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:20px;border:1px solid #e8edf2;border-radius:10px;background:#fff}
+.desk-module-settings label{display:grid;gap:6px;color:#65738a;font-size:13px;font-weight:700}
+.desk-module-settings input,.desk-module-settings select{height:39px;padding:8px 10px;border:1px solid #dfe6ed;border-radius:6px;background:white;color:#26354b;font:500 14px 'DM Sans',Arial,sans-serif}
+.desk-module-settings .desk-form-actions{grid-column:1/-1;justify-content:flex-start}
+.module-footnote{margin:14px 2px;color:#8a96a8;font-size:12px}
+@media(max-width:620px){.desk-nav{max-height:calc(100vh - 265px)}.module-row-actions{flex-wrap:wrap;min-width:95px}.module-action{font-size:11px;padding:5px}.desk-module-settings{grid-template-columns:1fr;padding:14px}.desk-module-settings .desk-form-actions{grid-column:auto}}
+  .desk-client-open{cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}.desk-client-open:hover,.desk-client-open:focus-visible{transform:translateY(-2px);border-color:#b9d8d0;box-shadow:0 10px 25px #193b3210;outline:none}.desk-client-open-hint{margin-top:12px;padding-top:9px;border-top:1px solid #edf0f4;color:#23847e;font-size:13px;font-weight:700}.desk-timeline-title{margin:20px 0 8px;color:#27344c;font-size:16px}.desk-timeline{display:grid;gap:8px;max-height:175px;overflow:auto}.desk-timeline-item{padding:9px 11px;border-left:2px solid #63bca4;border-radius:0 6px 6px 0;background:#f7faf9}.desk-timeline-item b,.desk-timeline-item small{display:block}.desk-timeline-item b{color:#39465d;font-size:14px}.desk-timeline-item small,.desk-profile-empty{margin-top:4px;color:#8793a4;font-size:13px}.prospect-detail-modal{max-height:calc(100vh - 32px);overflow:auto}.module-tools #togglePast{height:33px;padding:0 10px;font-size:13px}.module-row-actions{flex-wrap:wrap}.module-row-actions .module-action{white-space:nowrap}
